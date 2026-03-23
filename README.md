@@ -1,3 +1,5 @@
+# OUTDATED -> please go here https://github.com/IBM/galaxium-travels
+
 # 🚀 Galaxium Travels - Interplanetary Booking System
 
 A complete full-stack application for booking interplanetary space travel, featuring a modern React frontend and a FastAPI backend with dual REST and MCP protocol support.
