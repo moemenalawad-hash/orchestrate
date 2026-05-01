@@ -1,0 +1,555 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Galaxium Booking System",
+    "description": "API for booking interplanetary flights. Swagger UI available at /docs",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/": {
+      "get": {
+        "tags": ["Health"],
+        "summary": "Health Check",
+        "description": "Health check endpoint.",
+        "operationId": "health_check__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/flights": {
+      "get": {
+        "tags": ["Flights"],
+        "summary": "Get Flights",
+        "description": "List all available flights with origin, destination, times, price, and seats available.",
+        "operationId": "get_flights_flights_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/FlightOut"
+                  },
+                  "type": "array",
+                  "title": "Response Get Flights Flights Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/book": {
+      "post": {
+        "tags": ["Bookings"],
+        "summary": "Book Flight Endpoint",
+        "description": "Book a seat on a specific flight for a user in the specified seat class.\n\nRequires user_id, name, and flight_id.\nOptional seat_class: 'economy' (default), 'business', or 'galaxium'.\nDecrements available seats for the selected class if successful.",
+        "operationId": "book_flight_endpoint_book_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BookingRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/BookingOut"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ],
+                  "title": "Response Book Flight Endpoint Book Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bookings/{user_id}": {
+      "get": {
+        "tags": ["Bookings"],
+        "summary": "Get User Bookings",
+        "description": "Retrieve all bookings for a specific user by user_id.",
+        "operationId": "get_user_bookings_bookings__user_id__get",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "User Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BookingOut"
+                  },
+                  "title": "Response Get User Bookings Bookings  User Id  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cancel/{booking_id}": {
+      "post": {
+        "tags": ["Bookings"],
+        "summary": "Cancel Booking Endpoint",
+        "description": "Cancel an existing booking by its booking_id.\n\nIncrements available seats for the flight if successful.",
+        "operationId": "cancel_booking_endpoint_cancel__booking_id__post",
+        "parameters": [
+          {
+            "name": "booking_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Booking Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/BookingOut"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ],
+                  "title": "Response Cancel Booking Endpoint Cancel  Booking Id  Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/register": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Register User Endpoint",
+        "description": "Register a new user with a name and unique email.",
+        "operationId": "register_user_endpoint_register_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserRegistration"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/UserOut"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ],
+                  "title": "Response Register User Endpoint Register Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Get User Endpoint",
+        "description": "Retrieve a user's information by providing both name and email.",
+        "operationId": "get_user_endpoint_user_get",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Name"
+            }
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Email"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/UserOut"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ErrorResponse"
+                    }
+                  ],
+                  "title": "Response Get User Endpoint User Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BookingOut": {
+        "properties": {
+          "booking_id": {
+            "type": "integer",
+            "title": "Booking Id"
+          },
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "flight_id": {
+            "type": "integer",
+            "title": "Flight Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "booking_time": {
+            "type": "string",
+            "title": "Booking Time"
+          },
+          "seat_class": {
+            "type": "string",
+            "title": "Seat Class"
+          },
+          "price_paid": {
+            "type": "integer",
+            "title": "Price Paid"
+          }
+        },
+        "type": "object",
+        "required": [
+          "booking_id",
+          "user_id",
+          "flight_id",
+          "status",
+          "booking_time",
+          "seat_class",
+          "price_paid"
+        ],
+        "title": "BookingOut"
+      },
+      "BookingRequest": {
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "flight_id": {
+            "type": "integer",
+            "title": "Flight Id"
+          },
+          "seat_class": {
+            "type": "string",
+            "enum": ["economy", "business", "galaxium"],
+            "title": "Seat Class",
+            "default": "economy"
+          }
+        },
+        "type": "object",
+        "required": ["user_id", "name", "flight_id"],
+        "title": "BookingRequest"
+      },
+      "ErrorResponse": {
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "title": "Success",
+            "default": false
+          },
+          "error": {
+            "type": "string",
+            "title": "Error"
+          },
+          "error_code": {
+            "type": "string",
+            "title": "Error Code"
+          },
+          "details": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Details"
+          }
+        },
+        "type": "object",
+        "required": ["error", "error_code"],
+        "title": "ErrorResponse"
+      },
+      "FlightOut": {
+        "properties": {
+          "flight_id": {
+            "type": "integer",
+            "title": "Flight Id"
+          },
+          "origin": {
+            "type": "string",
+            "title": "Origin"
+          },
+          "destination": {
+            "type": "string",
+            "title": "Destination"
+          },
+          "departure_time": {
+            "type": "string",
+            "title": "Departure Time"
+          },
+          "arrival_time": {
+            "type": "string",
+            "title": "Arrival Time"
+          },
+          "base_price": {
+            "type": "integer",
+            "title": "Base Price"
+          },
+          "economy_seats_available": {
+            "type": "integer",
+            "title": "Economy Seats Available"
+          },
+          "business_seats_available": {
+            "type": "integer",
+            "title": "Business Seats Available"
+          },
+          "galaxium_seats_available": {
+            "type": "integer",
+            "title": "Galaxium Seats Available"
+          },
+          "economy_price": {
+            "type": "integer",
+            "title": "Economy Price"
+          },
+          "business_price": {
+            "type": "integer",
+            "title": "Business Price"
+          },
+          "galaxium_price": {
+            "type": "integer",
+            "title": "Galaxium Price"
+          }
+        },
+        "type": "object",
+        "required": [
+          "flight_id",
+          "origin",
+          "destination",
+          "departure_time",
+          "arrival_time",
+          "base_price",
+          "economy_seats_available",
+          "business_seats_available",
+          "galaxium_seats_available",
+          "economy_price",
+          "business_price",
+          "galaxium_price"
+        ],
+        "title": "FlightOut"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "UserOut": {
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "title": "User Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          }
+        },
+        "type": "object",
+        "required": ["user_id", "name", "email"],
+        "title": "UserOut"
+      },
+      "UserRegistration": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "title": "Email"
+          }
+        },
+        "type": "object",
+        "required": ["name", "email"],
+        "title": "UserRegistration"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": ["loc", "msg", "type"],
+        "title": "ValidationError"
+      }
+    }
+  }
+}
